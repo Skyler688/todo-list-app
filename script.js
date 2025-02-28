@@ -5,6 +5,8 @@ const saveTaskButton = document.getElementById("save-todo-btn");
 const listBox = document.getElementById("listBox");
 const saveInd = document.getElementById("saveIndex");
 
+let isEdit = false;
+
 // Challenge: Try and using your addTaskButton with a "keydown" eventlistener
 // and create a way to use the enter key to submit a new list item.
 
@@ -14,8 +16,10 @@ addTaskButton.addEventListener("click", (e) => {
 });
 
 addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
+  if (event.key === "Enter" && isEdit === false) {
     input();
+  } else if (event.key === "Enter" && isEdit === true) {
+    updateList();
   }
 });
 
@@ -94,15 +98,26 @@ function edit(ind) {
   text.value = todoArray[ind];
   addTaskButton.style.display = "none";
   saveTaskButton.style.display = "block";
+
+  isEdit = true;
 }
 
 saveTaskButton.addEventListener("click", () => {
+  updateList();
+});
+
+function updateList() {
   // this is the challenge for this project
   // in this part you will need to add the following:
   // 1. call the todo and let it equal localstorage.getitem("todo")
   // 2. assign the todoArray equal to JSON.parse(todo)
   let todo = localStorage.getItem("todo");
   todoArray = JSON.parse(todo);
+
+  if (text.value === "") {
+    alert("Invalid input, try again");
+    return;
+  }
   // then finish out the rest of the following instructions:
   // 1. let id be the same as your saveInd.value
   // 2. switch the add and save displays to block and none respectively.
@@ -116,4 +131,6 @@ saveTaskButton.addEventListener("click", () => {
   text.value = "";
   localStorage.setItem("todo", JSON.stringify(todoArray));
   displayTodo();
-});
+
+  isEdit = false;
+}
